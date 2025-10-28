@@ -15,8 +15,6 @@ const register = asyncHandler(async (req, res, next) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, password: hashedPassword });
-
-  // Dùng helper trả về chuẩn
   sendSuccess(
     "Đăng ký thành công",
     res,
@@ -32,12 +30,8 @@ const register = asyncHandler(async (req, res, next) => {
 });
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
-  // 1. Kiểm tra email tồn tại
   const user = await User.findOne({ email });
   if (!user) return throwError(next, "Email hoặc mật khẩu không đúng", 401);
-
-  // 2. So sánh password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return throwError(next, "Email hoặc mật khẩu không đúng", 401);
 
@@ -61,13 +55,52 @@ const login = asyncHandler(async (req, res, next) => {
     200
   );
 });
-const getUserInfo = (req, res) => {
-  res.json({ message: "Get user info", userId: req.params.id });
-};
+const getUserInfo = asyncHandler(async (req, res, next) => {
+  // Lấy userId từ token (đã được gắn vào req.user trong middleware protect)
+  const userId = req.user.id;
 
-const updateUser = (req, res) => {
-  res.json({ message: "Update user successfully", userId: req.params.id });
-};
+  // Truy vấn DB
+  const user = await User.findById(userId).select("-password"); // loại bỏ password
+
+  if (!user) return throwError(next, "Không tìm thấy người dùng", 404);
+
+  // Trả về thông tin user
+  sendSuccess("Lấy thông tin người dùng thành công", res, { user }, 200);
+});
+const updateUser = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id; // lấy từ token
+  const { name, email, password } = req.body;
+
+  // Tìm user hiện tại
+  const user = await User.findById(userId);
+  if (!user) return throwError(next, "Không tìm thấy người dùng", 404);
+
+  // Cập nhật các trường (nếu có truyền)
+  if (name) user.name = name;
+  if (email) user.email = email;
+
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+  }
+
+  // Lưu lại vào DB
+  const updatedUser = await user.save();
+
+  // Trả về thông tin mới (ẩn password)
+  sendSuccess(
+    "Cập nhật thông tin người dùng thành công",
+    res,
+    {
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    },
+    200
+  );
+});
 
 const deleteUser = (req, res) => {
   res.json({ message: "Delete user successfully", userId: req.params.id });

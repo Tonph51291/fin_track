@@ -7,6 +7,7 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/user.controller");
+const { protect } = require("../middlewares/auth.middleware");
 
 // Register new user
 router.post("/register", register);
@@ -15,12 +16,12 @@ router.post("/register", register);
 router.post("/login", login);
 
 // Get user info
-router.get("/:id", getUserInfo);
+router.get("/:id", protect, getUserInfo);
 
 // Update user
-router.put("/:id", updateUser);
+router.put("/:id", protect, updateUser);
 
 // Delete user
-router.delete("/:id", deleteUser);
+router.delete("/:id", protect, deleteUser);
 
 module.exports = router;
