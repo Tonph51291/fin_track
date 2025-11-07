@@ -7,11 +7,13 @@ const {
   deleteCategory,
 } = require("../controllers/category.controller");
 
+const { protect } = require("../middlewares/auth.middleware");
+router.use(protect);
 // Add new category
 router.post("/", addCategory);
 
-// Get all categories by user
-router.get("/user/:userId", getCategoriesByUser);
+// Get all categories for authenticated user
+router.get("/user", getCategoriesByUser);
 
 // Update category
 router.put("/:id", updateCategory);

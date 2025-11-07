@@ -9,17 +9,20 @@ const {
   deleteExpense,
 } = require("../controllers/expense.controller");
 
+const { protect } = require("../middlewares/auth.middleware");
+
+router.use(protect);
 // Add new expense
 router.post("/", addExpense);
 
-// Get all expenses by user
-router.get("/user/:userId", getExpensesByUser);
+// Get all expenses for authenticated user
+router.get("/user", getExpensesByUser);
 
-// Get expenses by month and year
-router.get("/user/:userId/:month/:year", getExpensesByMonth);
+// Get expenses by month and year for authenticated user
+router.get("/user/:month/:year", getExpensesByMonth);
 
-// Get expense summary
-router.get("/summary/:userId/:month/:year", getExpenseSummary);
+// Get expense summary for authenticated user
+router.get("/summary/:month/:year", getExpenseSummary);
 
 // Update expense
 router.put("/:id", updateExpense);
