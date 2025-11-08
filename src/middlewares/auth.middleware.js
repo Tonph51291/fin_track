@@ -20,7 +20,7 @@ const protect = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     // attach minimal user info to request
-    req.user = { id: decoded.id, email: decoded.email };
+    req.user = { _id: decoded.id, email: decoded.email };
     return next();
   } catch (err) {
     return throwError(next, "Invalid or expired token", 401);

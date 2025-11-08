@@ -8,14 +8,19 @@ const {
   deleteSalary,
 } = require("../controllers/salary.controller");
 
+const { protect } = require("../middlewares/auth.middleware");
+
+// Protect all routes
+router.use(protect);
+
 // Add new salary
 router.post("/", addSalary);
 
 // Get all salaries by user
-router.get("/user/:userId", getSalariesByUser);
+router.get("/user", getSalariesByUser);
 
 // Get salary by month and year
-router.get("/user/:userId/:month/:year", getSalaryByMonth);
+router.get("/user/:month/:year", getSalaryByMonth);
 
 // Update salary
 router.put("/:id", updateSalary);
