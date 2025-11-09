@@ -5,7 +5,7 @@ export const useLogin = () => {
     email: '',
     password: '',
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const onChange = useCallback(
     (key: keyof typeof form, value: string | null) => {
       setForm(prev => ({
@@ -16,5 +16,5 @@ export const useLogin = () => {
     [],
   );
 
-  return {form, setForm, onChange};
+  return {form, setForm, onChange, showPassword, setShowPassword};
 };

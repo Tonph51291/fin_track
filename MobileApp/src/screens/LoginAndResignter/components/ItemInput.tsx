@@ -12,6 +12,8 @@ interface ItemInputProps {
   onChangeText: (text: string) => void;
   isPassword?: boolean;
   iconLeft?: string;
+  onPressIconLeft?: () => void;
+  isShowPassword?: boolean;
 }
 const ItemInput = ({
   title,
@@ -19,7 +21,10 @@ const ItemInput = ({
   onChangeText,
   isPassword = false,
   iconLeft = Icons.IconEmail,
+  onPressIconLeft,
+  isShowPassword = false,
 }: ItemInputProps) => {
+  console.log('render');
   return (
     <Box borderColor={Colors.lightGray} marginTop={24} borderBottomWidth={1}>
       <TextApp>{title}</TextApp>
@@ -29,9 +34,11 @@ const ItemInput = ({
           style={styles.input}
           value={value}
           onChangeText={onChangeText}
-          secureTextEntry={isPassword}
+          secureTextEntry={isShowPassword}
         />
-        {isPassword && <IconApp source={Icons.IconEye} />}
+        {isPassword && (
+          <IconApp source={Icons.IconEye} onPress={onPressIconLeft} />
+        )}
       </Box>
     </Box>
   );

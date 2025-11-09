@@ -9,9 +9,16 @@ import ItemInput from './components/ItemInput';
 import ButtonText from '../../components/ButtonText';
 import {Icons} from '../../assets/icons';
 import {useRegister} from './hooks/useRegister';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../types/route';
 
 export default function Register() {
-  const {form, onChange} = useRegister();
+  const {form, onChange, handleRegister, loading} = useRegister();
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const handleNavigateToLogin = () => {
+    navigation.goBack();
+  };
   return (
     <Container>
       <Box
@@ -22,6 +29,7 @@ export default function Register() {
           fontSize={responsiveFont(32)}>
           Sign Up
         </TextApp>
+
         <ItemInput
           title="Name"
           value={form.name}
@@ -46,12 +54,17 @@ export default function Register() {
           isPassword
           iconLeft={Icons.IconLock}
         />
+
         <Box marginTop={responsiveSpacing(40)} alignItems="center">
-          <ButtonText title="Sign in" onPress={() => {}} />
+          <ButtonText
+            title={loading ? '' : 'Sign Up'}
+            onPress={handleRegister}
+          />
         </Box>
+
         <Box flexDirection="row" justifyContent="center" marginTop={24}>
           <TextApp>Already have an account? </TextApp>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleNavigateToLogin}>
             <TextApp color="#0066FF">Sign In</TextApp>
           </TouchableOpacity>
         </Box>

@@ -54,6 +54,7 @@ const TextApp: React.FC<TextAppProps> = ({
   ellipsizeMode = 'tail',
   textAlignVertical = 'auto',
 }) => {
+  console.log('render text');
   return (
     <Text
       numberOfLines={numberOfLines}
